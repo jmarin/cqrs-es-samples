@@ -76,11 +76,3 @@ case object Get extends AccountCommand[AccountState] {
     Writes(_ => Json.obj())
   )
 }
-
-// Error messages
-case object InsufficientFunds extends AccountCommand[AccountState] {
-  implicit val format: Format[InsufficientFunds.type] = Format(
-    Reads(_ => JsSuccess(InsufficientFunds)),
-    Writes(_ => Json.obj())
-  )
-}
