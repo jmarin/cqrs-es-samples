@@ -24,10 +24,13 @@ lazy val `lagom-bank-api` = (project in file("lagom-bank-api"))
   )
 
 lazy val `lagom-bank-impl` = (project in file("lagom-bank-impl"))
+  .enablePlugins(LagomScala)
   .settings(
     libraryDependencies ++= Seq(
       lagomScaladslAkkaDiscovery,
       lagomScaladslKafkaBroker,
+      lagomScaladslTestKit,
+      lagomScaladslApi,
       macwire,
       scalaTest
     )

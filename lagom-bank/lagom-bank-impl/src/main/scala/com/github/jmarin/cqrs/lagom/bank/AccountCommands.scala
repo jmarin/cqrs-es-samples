@@ -56,7 +56,7 @@ object WithdrawDone {
 }
 
 // Transfer Money
-case class TransferMoney(from: Account, amount: BigDecimal)
+case class TransferMoney(to: Account, amount: BigDecimal)
     extends AccountCommand[TransferMoneyDone]
 
 object TransferMoney {
@@ -73,6 +73,14 @@ object TransferMoneyDone {
 case object Get extends AccountCommand[AccountState] {
   implicit val format: Format[Get.type] = Format(
     Reads(_ => JsSuccess(Get)),
+    Writes(_ => Json.obj())
+  )
+}
+
+// Error messages
+case object InsufficientFunds extends AccountCommand[AccountState] {
+  implicit val format: Format[InsufficientFunds.type] = Format(
+    Reads(_ => JsSuccess(InsufficientFunds)),
     Writes(_ => Json.obj())
   )
 }
