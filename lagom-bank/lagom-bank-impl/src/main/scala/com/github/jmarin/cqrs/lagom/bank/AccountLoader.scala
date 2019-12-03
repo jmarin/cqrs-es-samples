@@ -1,4 +1,5 @@
 package com.github.jmarin.cqrs.lagom.bank
+
 import com.lightbend.lagom.scaladsl.server.LagomApplicationLoader
 import com.lightbend.lagom.scaladsl.server.{
   LagomApplication,
