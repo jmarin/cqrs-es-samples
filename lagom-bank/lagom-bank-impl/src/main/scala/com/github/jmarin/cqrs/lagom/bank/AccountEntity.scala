@@ -31,7 +31,7 @@ class AccountEntity extends PersistentEntity {
               ctx.reply(OpenAccountDone(account))
             }
           case (OpenAccount(_), ctx, state) if state.open =>
-            ctx.invalidCommand("Account is already open")
+            ctx.commandFailed(AccountException("Account is already open"))
             ctx.done
         }
         .onCommand[Deposit, DepositDone] {
@@ -47,7 +47,7 @@ class AccountEntity extends PersistentEntity {
                 ctx.reply(WithdrawDone(amount))
               }
             } else {
-              ctx.commandFailed(throw new Exception("Insufficient Funds"))
+              ctx.commandFailed(AccountException("Insufficient Funds"))
               ctx.done
             }
         }
@@ -57,13 +57,13 @@ class AccountEntity extends PersistentEntity {
               val evts =
                 Seq(
                   TransferFeeDeducted(transferFee),
-                  MoneyTransferred(to.id, amount)
+                  MoneyTransferred(to, amount)
                 )
               ctx.thenPersistAll(evts: _*) { () =>
-                ctx.reply(TransferMoneyDone(to.id, amount))
+                ctx.reply(TransferMoneyDone(to, amount))
               }
             } else {
-              ctx.commandFailed(throw new Exception("Insufficient Funds"))
+              ctx.commandFailed(AccountException("Insufficient Funds"))
               ctx.done
             }
 

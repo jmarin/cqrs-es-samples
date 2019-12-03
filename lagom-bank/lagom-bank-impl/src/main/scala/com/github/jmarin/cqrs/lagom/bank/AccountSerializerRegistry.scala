@@ -23,6 +23,7 @@ object AccountSerializerRegistry extends JsonSerializerRegistry {
     JsonSerializer[Withdrawn],
     JsonSerializer[TransferFeeDeducted],
     JsonSerializer[MoneyTransferred],
-    JsonSerializer[AccountState]
+    JsonSerializer[AccountState],
+    JsonSerializer[AccountException]
   )
 }

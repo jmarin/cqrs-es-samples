@@ -29,6 +29,7 @@ lazy val `lagom-bank-impl` = (project in file("lagom-bank-impl"))
     libraryDependencies ++= Seq(
       lagomScaladslAkkaDiscovery,
       lagomScaladslKafkaBroker,
+      lagomScaladslPersistenceCassandra,
       lagomScaladslTestKit,
       lagomScaladslApi,
       macwire,

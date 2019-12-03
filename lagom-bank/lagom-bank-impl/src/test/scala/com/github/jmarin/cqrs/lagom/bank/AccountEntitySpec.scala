@@ -47,10 +47,9 @@ class AccountEntitySpec extends WordSpec with Matchers with BeforeAndAfterAll {
     }
 
     "Fail withdraw when not enough funds" in {
-      val withdraw = intercept[Exception] {
-        driver.run(Withdraw(500))
-      }
-      withdraw.getMessage shouldBe "Insufficient Funds"
+      val withdraw = driver.run(Withdraw(500))
+      withdraw.replies.head shouldBe a[AccountException]
+      withdraw.events should have size 0
     }
 
     "Withdraw Money" in {
@@ -64,14 +63,14 @@ class AccountEntitySpec extends WordSpec with Matchers with BeforeAndAfterAll {
     }
 
     "Fail transfer money when infufficient funds" in {
-      val transfer = intercept[Exception] {
-        driver.run(TransferMoney(receiveAccount, 199.9))
-      }
-      transfer.getMessage shouldBe "Insufficient Funds"
+      val transfer =
+        driver.run(TransferMoney(receiveAccount.id, 199.9))
+      transfer.replies.head shouldBe a[AccountException]
+      transfer.events should have size 0
     }
 
     "Transfer Money to another account" in {
-      val transfer = driver.run(TransferMoney(receiveAccount, 195))
+      val transfer = driver.run(TransferMoney(receiveAccount.id, 195))
       transfer.replies should have size 1
       transfer.replies should contain only TransferMoneyDone(
         receiveAccount.id,

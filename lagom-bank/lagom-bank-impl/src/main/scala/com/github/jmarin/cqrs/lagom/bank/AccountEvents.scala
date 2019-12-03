@@ -22,8 +22,7 @@ object Withdrawn {
   implicit val format: Format[Withdrawn] = Json.format
 }
 
-case class MoneyTransferred(from: String, amount: BigDecimal)
-    extends AccountEvent
+case class MoneyTransferred(to: String, amount: BigDecimal) extends AccountEvent
 
 object MoneyTransferred {
   implicit val format: Format[MoneyTransferred] = Json.format

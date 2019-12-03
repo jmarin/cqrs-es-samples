@@ -23,7 +23,6 @@ class AccountStateSpec extends WordSpec with Matchers {
         .applyEvent(MoneyTransferred(account.id, 25))
         .applyEvent(TransferFeeDeducted(0.25))
       transferred shouldBe AccountState(true, 24.75)
-
     }
   }
 }

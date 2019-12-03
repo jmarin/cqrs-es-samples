@@ -56,7 +56,7 @@ object WithdrawDone {
 }
 
 // Transfer Money
-case class TransferMoney(to: Account, amount: BigDecimal)
+case class TransferMoney(to: String, amount: BigDecimal)
     extends AccountCommand[TransferMoneyDone]
 
 object TransferMoney {
@@ -75,4 +75,11 @@ case object Get extends AccountCommand[AccountState] {
     Reads(_ => JsSuccess(Get)),
     Writes(_ => Json.obj())
   )
+}
+
+// Exception thrown by Account Validation
+case class AccountException(message: String) extends RuntimeException(message)
+
+case object AccountException {
+  implicit val format: Format[AccountException] = Json.format
 }
