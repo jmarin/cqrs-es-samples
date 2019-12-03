@@ -1,0 +1,56 @@
+apiVersion: "apps/v1"
+kind: Deployment
+metadata: 
+  name: lagom-bank-service
+spec: 
+  replicas: 3
+  selector:
+    matchLabels:
+      app: lagom-bank-service
+
+  template:
+    metadata:
+      labels:
+        app: lagom-bank-service
+    spec:
+      containers:
+      - name: lagom-bank-service
+        image: "lagom-bank-impl:1.0.0-SNAPSHOT"
+        env:
+          - name: JAVA_OPTS
+            value: "-Xms256m -Xmx256m -Dconfig.resource=prod-application.conf"
+          - name: APPLICATION_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: lagom-bank-service-secret
+                key: secret
+          - name: KAFKA_SERVICE_NAME
+            value: "my-cluster-kafka-brokers.kafka.svc.cluster.local"
+          - name: CASSANDRA_CLUSTER_HOSTS
+            value: "cassandra-0.cassandra.default.svc.cluster.local"
+          - name: REQUIRED_CONTACT_POINT_NR
+            value: "3"
+        ports:
+          - name: management
+            containerPort: 8558
+        readinessProbe:
+          httpGet:
+            path: "/ready"
+            port: management
+          periodSeconds: 10
+          failureThreshold: 10
+          initialDelaySeconds: 20
+        livenessProbe:
+          httpGet:
+            path: "/alive"
+            port: management
+          periodSeconds: 10
+          failureThreshold: 10
+          initialDelaySeconds: 20
+        
+        resources:
+          limits: 
+            memory: 512Mi
+          requests:
+            cpu: 0.25
+            memory: 512Mi
