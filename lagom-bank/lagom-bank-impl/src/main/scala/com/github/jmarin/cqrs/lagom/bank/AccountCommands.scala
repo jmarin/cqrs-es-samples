@@ -11,7 +11,6 @@ import com.lightbend.lagom.scaladsl.playjson.{
   JsonSerializerRegistry
 }
 import play.api.libs.json._
-
 import scala.collection.immutable.Seq
 
 sealed trait AccountCommand[R] extends ReplyType[R]
