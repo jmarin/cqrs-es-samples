@@ -13,12 +13,14 @@ trait AccountService extends Service {
   def withdraw(id: String): ServiceCall[WithdrawMoney, Account]
   def get(id: String): ServiceCall[NotUsed, Account]
   def transfer(id: String): ServiceCall[TransferToAccount, Account]
+  def getAll(): ServiceCall[NotUsed, Seq[Account]]
 
   override def descriptor: Descriptor = {
     import Service._
     named("accounts")
       .withCalls(
         restCall(Method.POST, "/accounts", createAccount),
+        restCall(Method.GET, "/accounts", getAll),
         restCall(Method.PUT, "/accounts/:id/deposit", deposit _),
         restCall(Method.PUT, "/accounts/:id/withdraw", withdraw _),
         restCall(Method.PUT, "/accounts/:id/transer", transfer _),

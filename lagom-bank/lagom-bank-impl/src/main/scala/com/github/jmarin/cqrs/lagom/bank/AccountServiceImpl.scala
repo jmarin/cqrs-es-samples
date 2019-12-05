@@ -6,15 +6,17 @@ import com.lightbend.lagom.scaladsl.persistence.PersistentEntityRegistry
 import scala.concurrent.ExecutionContext
 import com.lightbend.lagom.scaladsl.api.transport.BadRequest
 import com.lightbend.lagom.scaladsl.persistence.ReadSide
+import com.github.jmarin.cqrs.lagom.bank.readside.{
+  AccountRepository,
+  ReadSideAccount
+}
 
 class AccountServiceImpl(
     persistentEntityRegistry: PersistentEntityRegistry,
-    readSide: ReadSide
+    repository: AccountRepository
 )(
     implicit ec: ExecutionContext
 ) extends AccountService {
-
-  //Register read side processor
 
   private def entityRef(id: String) =
     persistentEntityRegistry.refFor[AccountEntity](id)
@@ -66,6 +68,14 @@ class AccountServiceImpl(
   def get(id: String): ServiceCall[NotUsed, Account] = { _ =>
     val ref = entityRef(id)
     ref.ask(Get).map(state => Account(id, state.balance))
+  }
+
+  def getAll(): ServiceCall[NotUsed, Seq[Account]] = { _ =>
+    repository.getAll().map(_.map(toApi))
+  }
+
+  private def toApi: ReadSideAccount => Account = { readSideAccount =>
+    Account(readSideAccount.id, readSideAccount.balance)
   }
 
 }

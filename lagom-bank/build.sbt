@@ -9,6 +9,7 @@ val macwire = "com.softwaremill.macwire" %% "macros" % "2.3.0" % "provided"
 val scalaTest = "org.scalatest" %% "scalatest" % "3.0.4" % Test
 val akkaDiscovery = "com.lightbend.lagom" %% "lagom-scaladsl-akka-discovery-service-locator" % LagomVersion.current
 val akkaKubernetes = "com.lightbend.akka.discovery" %% "akka-discovery-kubernetes-api" % "1.0.5"
+val h2 = "com.h2database" % "h2" % "1.4.196"
 
 lazy val `lagom-bank` = (project in file("."))
   .aggregate(
@@ -31,10 +32,12 @@ lazy val `lagom-bank-impl` = (project in file("lagom-bank-impl"))
       akkaKubernetes,
       lagomScaladslKafkaBroker,
       lagomScaladslPersistenceCassandra,
+      lagomScaladslPersistenceJdbc,
       lagomScaladslTestKit,
       lagomScaladslApi,
       macwire,
-      scalaTest
+      scalaTest,
+      h2
     )
   )
   .dependsOn(`lagom-bank-api`)

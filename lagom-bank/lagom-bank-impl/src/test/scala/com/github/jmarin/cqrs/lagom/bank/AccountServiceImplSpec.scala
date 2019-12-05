@@ -35,6 +35,12 @@ class AccountServiceImplSpec
           account.balance shouldBe 100
           account.id shouldBe accountId
       }
+
+      client.createAccount.invoke(CreateAccount(receivingId, 0)).map {
+        account =>
+          account.balance shouldBe 0
+          account.id shouldBe receivingId
+      }
     }
 
     "Deposit money" in {
@@ -72,6 +78,12 @@ class AccountServiceImplSpec
         .invoke(TransferToAccount(receivingId, 99.60))
 
       recoverToSucceededIf[BadRequest](f)
+    }
+
+    "retrieve all accounts" in {
+      client.getAll().invoke().map { xs =>
+        xs.size shouldBe 2
+      }
     }
 
   }
