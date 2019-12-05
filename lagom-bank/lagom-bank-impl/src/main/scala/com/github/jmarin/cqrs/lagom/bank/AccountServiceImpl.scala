@@ -5,10 +5,16 @@ import akka.NotUsed
 import com.lightbend.lagom.scaladsl.persistence.PersistentEntityRegistry
 import scala.concurrent.ExecutionContext
 import com.lightbend.lagom.scaladsl.api.transport.BadRequest
+import com.lightbend.lagom.scaladsl.persistence.ReadSide
 
-class AccountServiceImpl(persistentEntityRegistry: PersistentEntityRegistry)(
+class AccountServiceImpl(
+    persistentEntityRegistry: PersistentEntityRegistry,
+    readSide: ReadSide
+)(
     implicit ec: ExecutionContext
 ) extends AccountService {
+
+  //Register read side processor
 
   private def entityRef(id: String) =
     persistentEntityRegistry.refFor[AccountEntity](id)

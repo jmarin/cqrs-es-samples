@@ -76,10 +76,3 @@ case object Get extends AccountCommand[AccountState] {
     Writes(_ => Json.obj())
   )
 }
-
-// Exception thrown by Account Validation
-case class AccountException(message: String) extends RuntimeException(message)
-
-case object AccountException {
-  implicit val format: Format[AccountException] = Json.format
-}

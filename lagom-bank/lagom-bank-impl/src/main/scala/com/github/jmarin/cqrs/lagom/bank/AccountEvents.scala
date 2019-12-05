@@ -1,8 +1,17 @@
 package com.github.jmarin.cqrs.lagom.bank
 
 import play.api.libs.json.{Format, Json}
+import com.lightbend.lagom.scaladsl.persistence.AggregateEvent
+import com.lightbend.lagom.scaladsl.persistence.AggregateEventTagger
+import com.lightbend.lagom.scaladsl.persistence.AggregateEventTag
 
-sealed trait AccountEvent
+sealed trait AccountEvent extends AggregateEvent[AccountEvent] {
+  def aggregateTag = AccountEvent.Tag
+}
+
+object AccountEvent {
+  val Tag = AggregateEventTag.sharded[AccountEvent](10)
+}
 
 case class AccountOpened(account: Account) extends AccountEvent
 
