@@ -10,9 +10,43 @@ A simple bank account with the following requirements:
 
 ## Running in Production Mode (Minikube)
 
+### Postgres
+
+Deploy `Postgres` to `minikube` as follows: 
+
+```shell
+kubectl apply -f k8s/postgres/postgres-pv.yaml
+kubectl apply -f k8s/postgres/postgres-pvc.yaml
+kubectl apply -f k8s/postgres/postgres-secrets.yaml
+kubectl apply -f k8s/postgres/postgres-deployment.yaml
+kubectl apply -f k8s/postgres/postgres-service.yaml
+```
+
+Add the `Lagom` schema as follows:
+
+- First, forward port from running `postgres` pod
+
+```shell
+kubectl port-forward postgres-deployment-777779fd7b-nqkc7 5432:5432 (change pod name as needed)
+```
+
+Connect to `postgres` in your localhost and create the Lagom schema for the read side:
+
+```shell
+psql -h localhost -U postgres
+```
+
+```sql
+CREATE TABLE read_side_offsets (
+  read_side_id VARCHAR(255), tag VARCHAR(255),
+  sequence_offset bigint, time_uuid_offset char(36),
+  PRIMARY KEY (read_side_id, tag)
+);
+```
+
 ### Cassandra
 
-Deploy Cassandra cluster to minikube as follows: 
+Deploy `Cassandra` cluster to `minikube` as follows: 
 
 `kubectl apply -f k8s/cassandra/cassandra-statefulset.yaml`
 `kubectl apply -f k8s/cassandra/cassandra-service.yaml`
