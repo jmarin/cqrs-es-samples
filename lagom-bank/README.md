@@ -49,6 +49,7 @@ CREATE TABLE read_side_offsets (
 Deploy `Cassandra` cluster to `minikube` as follows: 
 
 `kubectl apply -f k8s/cassandra/cassandra-statefulset.yaml`
+
 `kubectl apply -f k8s/cassandra/cassandra-service.yaml`
 
 ### Kafka
@@ -73,5 +74,6 @@ Build the application and create the docker image:
 And deploy the `lagom-bank` application:
 
 `kubectl apply -f k8s/lagom-bank/lagom-bank-deployment.yaml`
+
 `kubectl apply -f k8s/lagom-bank/lagom-bank-service.yaml`
 
