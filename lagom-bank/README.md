@@ -8,7 +8,43 @@ A simple bank account with the following requirements:
 - Minimum amount of money to transfer is $5 (i.e. $5.25 with fee)
 - Bank wants to know, "in real time", how much money it has made out of transaction fees. 
 
+## Running locally
+
+```shell
+sbt runAll
+```
+
+The following endpoints are available:
+
+* Create Account
+
+`curl -XPOST -d '{"accountId": "123", "initialBalance": 0}' http://localhost:9000/accounts`
+
+* Get Accounts
+
+`curl -XGET http://localhost:9000/accounts`
+
+* Make a deposit to account
+
+`curl -XPUT -d '{"amount": 50}' http://localhost:9000/accounts/123/deposit`
+
+* Withdraw from account
+
+`curl -XPUT -d '{"amount": 50}' http://localhost:9000/accounts/123/withdraw`
+
+* Transfer funds from account
+
+`curl -XPUT -d '{"to": "456", "amount": 5}' http://localhost:9000/accounts/123/transfer`
+
+* Get Account details
+
+`curl -XGET http://localhost:9000/accounts/123`
+
+This will start the Lagom service in development mode. This includes embedded `Cassandra` and `Kafka` instances. It uses `H2` as an embedded relational database for the read side. 
+
 ## Running in Production Mode (Minikube)
+
+In production mode, this service requires `Cassandra`, `Kafka` and `Postgres`. These can all be deployed to Minikube by following the instructions below. 
 
 ### Postgres
 
