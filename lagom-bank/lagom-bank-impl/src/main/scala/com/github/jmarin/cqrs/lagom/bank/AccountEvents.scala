@@ -17,10 +17,10 @@ object Deposited {
     implicit val format: OFormat[Deposited] = Json.format
 }
 
-case class Withdrawn(amount: BigDecimal) extends AccountEvent\
+case class Withdrawn(amount: BigDecimal) extends AccountEvent
 
-object Deposited {
-    implicit val format: OFormat[Deposited] = Json.format
+object Withdrawn {
+    implicit val format: OFormat[Withdrawn] = Json.format
 }
 
 case class MoneyTransferred(to: String, amount: BigDecimal) extends AccountEvent
