@@ -49,10 +49,10 @@ abstract class AccountApplication(context: LagomApplicationContext)
   override lazy val lagomServer: LagomServer = ???
     //serverFor[AccountService](wire[AccountServiceImpl])
 
-  //persistentEntityRegistry.register(wire[AccountEntity])
+  persistentEntityRegistry.register(wire[AccountEntity])
 
-  override def jsonSerializerRegistry: JsonSerializerRegistry = ???
-    //AccountSerializerRegistry
+  override def jsonSerializerRegistry: JsonSerializerRegistry = 
+    AccountSerializerRegistry
 
   //lazy val eventProcessor = wire[AccountProcessor]
   //lazy val repo = wire[AccountRepository]
