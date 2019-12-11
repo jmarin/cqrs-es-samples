@@ -18,10 +18,10 @@ import com.lightbend.lagom.scaladsl.playjson.JsonSerializerRegistry
 import com.lightbend.lagom.scaladsl.persistence.jdbc.ReadSideJdbcPersistenceComponents
 import play.api.db.HikariCPComponents
 import com.lightbend.lagom.scaladsl.persistence.cassandra.WriteSideCassandraPersistenceComponents
-import com.github.jmarin.cqrs.lagom.bank.readside.{
-  AccountRepository,
-  AccountProcessor
-}
+// import com.github.jmarin.cqrs.lagom.bank.readside.{
+//   AccountRepository,
+//   AccountProcessor
+// }
 
 class AccountLoader extends LagomApplicationLoader {
 
@@ -46,15 +46,15 @@ abstract class AccountApplication(context: LagomApplicationContext)
     with WriteSideCassandraPersistenceComponents
     with AhcWSComponents {
 
-  override lazy val lagomServer: LagomServer =
-    serverFor[AccountService](wire[AccountServiceImpl])
+  override lazy val lagomServer: LagomServer = ???
+    //serverFor[AccountService](wire[AccountServiceImpl])
 
-  persistentEntityRegistry.register(wire[AccountEntity])
+  //persistentEntityRegistry.register(wire[AccountEntity])
 
-  override def jsonSerializerRegistry: JsonSerializerRegistry =
-    AccountSerializerRegistry
+  override def jsonSerializerRegistry: JsonSerializerRegistry = ???
+    //AccountSerializerRegistry
 
-  lazy val eventProcessor = wire[AccountProcessor]
-  lazy val repo = wire[AccountRepository]
+  //lazy val eventProcessor = wire[AccountProcessor]
+  //lazy val repo = wire[AccountRepository]
 
 }
