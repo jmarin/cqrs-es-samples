@@ -46,8 +46,8 @@ abstract class AccountApplication(context: LagomApplicationContext)
     with WriteSideCassandraPersistenceComponents
     with AhcWSComponents {
 
-  override lazy val lagomServer: LagomServer = ???
-    //serverFor[AccountService](wire[AccountServiceImpl])
+  override lazy val lagomServer: LagomServer = 
+    serverFor[AccountService](wire[AccountServiceImpl])
 
   persistentEntityRegistry.register(wire[AccountEntity])
 
