@@ -21,6 +21,18 @@ object OpenAccountDone {
     implicit val format: OFormat[OpenAccountDone] = Json.format
 }
 
+case class Deposit(amount: BigDecimal) extends AccountCommand[DepositDone]
+
+object Deposit {
+    implicit val format: OFormat[Deposit] = Json.format
+}
+
+case class DepositDone(amount: BigDecimal)
+
+object DepositDone {
+    implicit val format: OFormat[DepositDone] = Json.format
+}
+
 case class Withdraw(amount: BigDecimal) extends AccountCommand[WithdrawDone]
 
 object Withdraw {
