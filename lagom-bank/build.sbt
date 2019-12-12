@@ -5,6 +5,8 @@ version in ThisBuild := "1.0.0-SNAPSHOT"
 
 scalaVersion in ThisBuild := "2.12.9"
 
+lagomServiceGatewayAddress in ThisBuild := "0.0.0.0"
+
 val macwire = "com.softwaremill.macwire" %% "macros" % "2.3.0" % "provided"
 val scalaTest = "org.scalatest" %% "scalatest" % "3.0.4" % Test
 val akkaDiscovery = "com.lightbend.lagom" %% "lagom-scaladsl-akka-discovery-service-locator" % LagomVersion.current
