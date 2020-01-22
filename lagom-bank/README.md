@@ -13,6 +13,7 @@ A simple bank account with the following requirements:
 ```shell
 sbt runAll
 ```
+This will start the Lagom service in development mode. This includes embedded `Cassandra` and `Kafka` instances. It uses `H2` as an embedded relational database for the read side.
 
 The following endpoints are available:
 
@@ -40,7 +41,6 @@ The following endpoints are available:
 
 `curl -XGET http://localhost:9000/accounts/123`
 
-This will start the Lagom service in development mode. This includes embedded `Cassandra` and `Kafka` instances. It uses `H2` as an embedded relational database for the read side. 
 
 ## Running in Production Mode (Minikube)
 
