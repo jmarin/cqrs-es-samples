@@ -80,12 +80,6 @@ class AccountServiceImplSpec
       recoverToSucceededIf[BadRequest](f)
     }
 
-    "retrieve all accounts" in {
-      client.getAll().invoke().map { xs =>
-        xs.size shouldBe 2
-      }
-    }
-
   }
 
 }

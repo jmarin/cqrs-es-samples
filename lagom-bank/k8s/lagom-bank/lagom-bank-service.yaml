@@ -9,4 +9,28 @@ spec:
       targetPort: 9000
   selector: 
     app: lagom-bank-service
-  type: NodePort
+  type: LoadBalancer
+
+---
+apiVersion: v1
+kind: Service
+metadata: 
+  name: lagom-bank-service-internal
+  labels: 
+    app: lagom-bank-service
+  annotations:
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+spec: 
+  ports:
+    - name: remoting
+      port: 2552
+      protocol: TCP
+      targetPort: 2552
+    - name: akka-http-mgmt
+      port: 8558
+      protocol: TCP
+      targetPort: 8558
+  selector:
+    app: lagom-bank-service
+  clusterIP: None
+  publishNotReadyAddresses: true

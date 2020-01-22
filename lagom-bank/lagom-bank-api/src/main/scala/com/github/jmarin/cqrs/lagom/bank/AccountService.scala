@@ -23,7 +23,7 @@ trait AccountService extends Service {
         restCall(Method.GET, "/accounts", getAll),
         restCall(Method.PUT, "/accounts/:id/deposit", deposit _),
         restCall(Method.PUT, "/accounts/:id/withdraw", withdraw _),
-        restCall(Method.PUT, "/accounts/:id/transer", transfer _),
+        restCall(Method.PUT, "/accounts/:id/transfer", transfer _),
         restCall(Method.GET, "/accounts/:id", get _)
       )
       .withAutoAcl(true)
