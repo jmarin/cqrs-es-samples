@@ -10,6 +10,10 @@ import com.lightbend.lagom.scaladsl.persistence.jdbc.JdbcSession
 import com.lightbend.lagom.scaladsl.persistence.EventStreamElement
 import com.github.jmarin.cqrs.lagom.bank.AccountOpened
 import java.time.Instant
+import com.github.jmarin.cqrs.lagom.bank.{Deposited, Withdrawn}
+import org.h2.jdbc.JdbcConnection
+import com.github.jmarin.cqrs.lagom.bank.MoneyTransferred
+import com.github.jmarin.cqrs.lagom.bank.TransferFeeDeducted
 
 class AccountProcessor(readSide: JdbcReadSide)(implicit ec: ExecutionContext)
     extends ReadSideProcessor[AccountEvent] {
@@ -28,6 +32,10 @@ class AccountProcessor(readSide: JdbcReadSide)(implicit ec: ExecutionContext)
       .builder[AccountEvent]("AccountReadSide")
       .setGlobalPrepare(buildTables)
       .setEventHandler[AccountOpened](accountOpened)
+      .setEventHandler[Deposited](deposited)
+      .setEventHandler[Withdrawn](withdrawn)
+      .setEventHandler(transferred)
+      .setEventHandler(feeDeducted)
       .build()
 
   override def aggregateTags: Set[AggregateEventTag[AccountEvent]] =
@@ -46,6 +54,69 @@ class AccountProcessor(readSide: JdbcReadSide)(implicit ec: ExecutionContext)
       statement.setString(1, eventElement.entityId)
       statement.setBigDecimal(2, eventElement.event.account.balance.bigDecimal)
       statement.setString(3, Instant.now().toString())
+      statement.executeUpdate
+    }
+  }
+
+  private def deposited(
+      connection: Connection,
+      eventElement: EventStreamElement[Deposited]
+  ): Unit = {
+    JdbcSession.tryWith(
+      connection
+        .prepareStatement(
+          "UPDATE accounts SET balance = balance + ? WHERE id = ?"
+        )
+    ) { statement =>
+      statement.setBigDecimal(1, eventElement.event.amount.bigDecimal)
+      statement.setString(2, eventElement.entityId)
+      statement.executeUpdate
+    }
+  }
+
+  private def withdrawn(
+      connection: Connection,
+      eventElement: EventStreamElement[Withdrawn]
+  ): Unit = {
+    JdbcSession.tryWith(
+      connection
+        .prepareStatement(
+          "UPDATE accounts SET balance = balance - ? WHERE id = ?"
+        )
+    ) { statement =>
+      statement.setBigDecimal(1, eventElement.event.amount.bigDecimal)
+      statement.setString(2, eventElement.entityId)
+      statement.executeUpdate
+    }
+  }
+
+  private def transferred(
+      connection: Connection,
+      eventElement: EventStreamElement[MoneyTransferred]
+  ): Unit = {
+    JdbcSession.tryWith(
+      connection
+        .prepareStatement(
+          "UPDATE accounts SET balance = balance - ? WHERE id = ?"
+        )
+    ) { statement =>
+      statement.setBigDecimal(1, eventElement.event.amount.bigDecimal)
+      statement.setString(2, eventElement.entityId)
+      statement.executeUpdate
+    }
+  }
+
+  private def feeDeducted(
+      connection: Connection,
+      eventElement: EventStreamElement[TransferFeeDeducted]
+  ): Unit = {
+    JdbcSession.tryWith(
+      connection.prepareStatement(
+        "UPDATE accounts SET balance = balance - ? WHERE id = ?"
+      )
+    ) { statement =>
+      statement.setBigDecimal(1, eventElement.event.amount.bigDecimal)
+      statement.setString(2, eventElement.entityId)
       statement.executeUpdate
     }
   }
