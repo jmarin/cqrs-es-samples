@@ -51,11 +51,7 @@ In production mode, this service requires `Cassandra`, `Kafka` and `Postgres`. T
 Deploy `Postgres` to `minikube` as follows: 
 
 ```shell
-kubectl apply -f k8s/postgres/postgres-pv.yaml
-kubectl apply -f k8s/postgres/postgres-pvc.yaml
-kubectl apply -f k8s/postgres/postgres-secrets.yaml
-kubectl apply -f k8s/postgres/postgres-deployment.yaml
-kubectl apply -f k8s/postgres/postgres-service.yaml
+kubectl apply -f k8s/postgres
 ```
 
 Add the `Lagom` schema as follows:
@@ -84,9 +80,9 @@ CREATE TABLE read_side_offsets (
 
 Deploy `Cassandra` cluster to `minikube` as follows: 
 
-`kubectl apply -f k8s/cassandra/cassandra-statefulset.yaml`
-
-`kubectl apply -f k8s/cassandra/cassandra-service.yaml`
+```shell
+kubectl apply -f k8s/cassandra
+```
 
 ### Kafka
 
@@ -109,7 +105,7 @@ Build the application and create the docker image:
 
 And deploy the `lagom-bank` application:
 
-`kubectl apply -f k8s/lagom-bank/lagom-bank-deployment.yaml`
-
-`kubectl apply -f k8s/lagom-bank/lagom-bank-service.yaml`
+```shell
+kubectl apply -f k8s/lagom-bank
+```
 
