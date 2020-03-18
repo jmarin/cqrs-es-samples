@@ -1,0 +1,68 @@
+apiVersion: "apps/v1"
+kind: Deployment
+metadata: 
+  name: email-delivery
+spec: 
+  replicas: 1
+  selector:
+    matchLabels:
+      app: email-delivery
+
+  template:
+    metadata:
+      labels:
+        app: email-delivery
+    spec:
+      containers:
+      - name: email-delivery
+        image: "email-delivery:1.0.0-SNAPSHOT"
+        env:
+          - name: JAVA_OPTS
+            value: "-Xms256m -Xmx256m -Dconfig.resource=prod-application.conf"
+          - name: APPLICATION_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: email-delivery-service-secret
+                key: secret
+          - name: KAFKA_SERVICE_NAME
+            value: "my-cluster-kafka-brokers.kafka.svc.cluster.local"
+          - name: CASSANDRA_CLUSTER_HOSTS
+            value: "cassandra-0.cassandra.default.svc.cluster.local"
+          - name: REQUIRED_CONTACT_POINT_NR
+            value: "1"
+          # - name: POSTGRESQL_URL
+          #   value: "jdbc:postgresql://postgres-service/postgres"
+          # - name: POSTGRESQL_USERNAME
+          #   valueFrom:
+          #     secretKeyRef:
+          #       name: postgres-credentials
+          #       key: user
+          # - name: POSTGRESQL_PASSWORD
+          #   valueFrom:
+          #     secretKeyRef:
+          #       name: postgres-credentials
+          #       key: password
+        ports:
+          - name: management
+            containerPort: 8558
+        readinessProbe:
+          httpGet:
+            path: "/ready"
+            port: management
+          periodSeconds: 10
+          failureThreshold: 10
+          initialDelaySeconds: 20
+        livenessProbe:
+          httpGet:
+            path: "/alive"
+            port: management
+          periodSeconds: 10
+          failureThreshold: 10
+          initialDelaySeconds: 20
+        
+        resources:
+          limits: 
+            memory: 512Mi
+          requests:
+            cpu: 0.25
+            memory: 512Mi

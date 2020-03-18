@@ -12,12 +12,14 @@ import com.github.jmarin.cqrs.email.delivery.protobuf.{
   SendEmailResponse
 }
 import scala.concurrent.Future
+import java.time.Instant
 
 class EmailServiceImpl(materializer: Materializer) extends EmailService {
 
   override def serviceInfo(
       in: ServiceInfoRequest
-  ): Future[ServiceInfoResponse] = ???
+  ): Future[ServiceInfoResponse] =
+    Future.successful(ServiceInfoResponse("1.0", Instant.now().toString()))
 
   override def sendEmail(in: SendEmailRequest): Future[SendEmailResponse] = ???
 

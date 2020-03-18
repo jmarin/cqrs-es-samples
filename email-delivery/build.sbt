@@ -1,10 +1,12 @@
 name := "email-delivery"
 
-version := "1.0"
+version := "1.0.0-SNAPSHOT"
 
 scalaVersion := "2.13.1"
 
 lazy val akkaVersion = "2.6.4"
+
+enablePlugins(JavaAppPackaging)
 
 enablePlugins(AkkaGrpcPlugin)
 // ALPN agent

@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: email-delivery-service
+spec: 
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+  selector: 
+    app: email-delivery-service
+  type: LoadBalancer
+
+---
+apiVersion: v1
+kind: Service
+metadata: 
+  name: email-delivery-service-internal
+  labels: 
+    app: email-delivery-service
+  annotations:
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+spec: 
+  ports:
+    - name: remoting
+      port: 2552
+      protocol: TCP
+      targetPort: 2552
+    - name: akka-http-mgmt
+      port: 8558
+      protocol: TCP
+      targetPort: 8558
+  selector:
+    app: email-delivery-service
+  clusterIP: None
+  publishNotReadyAddresses: true
