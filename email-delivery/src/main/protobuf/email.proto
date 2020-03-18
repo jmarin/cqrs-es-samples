@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.github.jmarin.cqrs.email.delivery.protobuf";
+option java_outer_classname = "EmailDeliveryProto";
+
+service EmailService {
+  rpc ServiceInfo(ServiceInfoRequest) returns (ServiceInfoResponse) {}
+
+  rpc SendEmail(SendEmailRequest) returns (SendEmailResponse) {}
+}
+
+message ServiceInfoRequest {}
+
+message ServiceInfoResponse {
+  string version = 1;
+  string date = 2;
+}
+
+message SendEmailRequest {}
+
+message SendEmailResponse {}

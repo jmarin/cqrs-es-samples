@@ -6,6 +6,7 @@ scalaVersion := "2.13.1"
 
 lazy val akkaVersion = "2.6.4"
 
+enablePlugins(AkkaGrpcPlugin)
 // ALPN agent
 enablePlugins(JavaAgent)
 javaAgents += "org.mortbay.jetty.alpn" % "jetty-alpn-agent" % "2.0.7" % "runtime;test"
