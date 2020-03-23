@@ -62,6 +62,13 @@ class AccountEntitySpec extends WordSpec with Matchers with BeforeAndAfterAll {
       balance.replies should contain only AccountState(true, 200)
     }
 
+    "Fail transfer below minimun required threshold" in {
+      val transfer = driver
+        .run(TransferMoney(receiveAccount.id, 4))
+      transfer.replies.head shouldBe a[AccountException]
+      transfer.events should have size 0
+    }
+
     "Fail transfer money when infufficient funds" in {
       val transfer =
         driver.run(TransferMoney(receiveAccount.id, 199.9))

@@ -53,7 +53,10 @@ class AccountEntity extends PersistentEntity {
         }
         .onCommand[TransferMoney, TransferMoneyDone] {
           case (TransferMoney(to, amount), ctx, state) =>
-            if ((amount + transferFee) < state.balance) {
+            if (amount < 5) {
+              ctx.commandFailed(AccountException("Minimum Transfer must be $5"))
+              ctx.done
+            } else if ((amount + transferFee) < state.balance) {
               val evts =
                 Seq(
                   TransferFeeDeducted(transferFee),
