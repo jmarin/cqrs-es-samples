@@ -16,7 +16,8 @@ class AccountEntity extends PersistentEntity {
   override def initialState: AccountState = EmptyAccountState()
 
   val config = ConfigFactory.load()
-  val transferFee = config.getDouble("bank.transfer-fee")
+  val transferFee = config.getDouble("bank.transfer.fee")
+  val minimumTransfer = config.getDouble("bank.transfer.minimum-amount")
 
   override def behavior: Behavior = {
     case AccountState(_, _) =>
@@ -53,7 +54,7 @@ class AccountEntity extends PersistentEntity {
         }
         .onCommand[TransferMoney, TransferMoneyDone] {
           case (TransferMoney(to, amount), ctx, state) =>
-            if (amount < 5) {
+            if (amount < minimumTransfer) {
               ctx.commandFailed(AccountException("Minimum Transfer must be $5"))
               ctx.done
             } else if ((amount + transferFee) < state.balance) {
