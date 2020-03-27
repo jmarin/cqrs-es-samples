@@ -8,7 +8,7 @@ scalaVersion in ThisBuild := "2.12.11"
 val macwire = "com.softwaremill.macwire" %% "macros" % "2.3.0" % "provided"
 val scalaTest = "org.scalatest" %% "scalatest" % "3.0.4" % Test
 val akkaDiscovery = "com.lightbend.lagom" %% "lagom-scaladsl-akka-discovery-service-locator" % LagomVersion.current
-val akkaKubernetes = "com.lightbend.akka.discovery" %% "akka-discovery-kubernetes-api" % "1.0.5"
+val akkaKubernetes = "com.lightbend.akka.discovery" %% "akka-discovery-kubernetes-api" % "1.0.6"
 val h2 = "com.h2database" % "h2" % "1.4.196"
 val postgres = "org.postgresql" % "postgresql" % "42.2.8"
 
@@ -26,8 +26,10 @@ lazy val `lagom-bank-api` = (project in file("lagom-bank-api"))
   )
 
 lazy val `lagom-bank-impl` = (project in file("lagom-bank-impl"))
-  .enablePlugins(LagomScala)
+  .enablePlugins(LagomScala, Cinnamon)
   .settings(
+    cinnamon in run := true,
+    cinnamon in test := false,
     libraryDependencies ++= Seq(
       lagomScaladslAkkaDiscovery,
       akkaKubernetes,
@@ -39,7 +41,13 @@ lazy val `lagom-bank-impl` = (project in file("lagom-bank-impl"))
       macwire,
       scalaTest,
       h2,
-      postgres
+      postgres,
+      // Use Coda Hale Metrics and Lagom instrumentation
+      Cinnamon.library.cinnamonCHMetrics3,
+      Cinnamon.library.cinnamonLagom,
+      Cinnamon.library.cinnamonOpenTracing,
+      Cinnamon.library.cinnamonOpenTracingJaeger
     )
   )
+  .settings(lagomForkedTestSettings)
   .dependsOn(`lagom-bank-api`)

@@ -109,3 +109,8 @@ And deploy the `lagom-bank` application:
 kubectl apply -f k8s/lagom-bank
 ```
 
+You can deploy `Jaeger` to Kubernetes as follows:
+
+```shell
+kubectl apply -f k8s/jaeger
+```

@@ -28,6 +28,10 @@ spec:
             value: "my-cluster-kafka-brokers.kafka.svc.cluster.local"
           - name: CASSANDRA_CLUSTER_HOSTS
             value: "cassandra-0.cassandra.default.svc.cluster.local"
+          - name: JAEGER_HOST
+            value: "jaeger-agent.default.svc.cluster.local"
+          - name: JAEGER_PORT
+            value: "14268"
           - name: REQUIRED_CONTACT_POINT_NR
             value: "3"
           - name: POSTGRESQL_URL
