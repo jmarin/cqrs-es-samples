@@ -35,7 +35,14 @@ object LagomBankGateway {
     val bankService: Future[Resolved] =
       discovery.lookup("lagom-bank-service", resolveTimeout = 500 milliseconds)
 
-    def route2(uri: String): Route =
+    val status: Route =
+      path("status") {
+        get {
+          complete("OK")
+        }
+      }
+
+    def route(uri: String): Route =
       extractRequest { request =>
         val url = request.uri.path
         val path = s"${uri}$url"
@@ -57,13 +64,8 @@ object LagomBankGateway {
           }
       }
 
-    def route(uri: String): Route =
-      get {
-        complete("Lagom Bank Gateway")
-      }
-
     def bindingFuture(uri: String): Future[ServerBinding] =
-      Http().bindAndHandle(route2(uri), "localhost", 8080)
+      Http().bindAndHandle(status ~ route(uri), "localhost", 8080)
 
     val futureServer = for {
       resolved <- bankService

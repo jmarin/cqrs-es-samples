@@ -1,0 +1,49 @@
+apiVersion: "apps/v1"
+kind: Deployment
+metadata: 
+  name: lagom-bank-gateway
+spec: 
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lagom-bank-gateway
+
+  template:
+    metadata:
+      labels:
+        app: lagom-bank-gateway
+    spec:
+      containers:
+      - name: lagom-bank-gateway
+        image: "lagom-bank-gateway:1.0.0-SNAPSHOT"
+        env:
+          - name: JAVA_OPTS
+            value: "-Xms256m -Xmx256m -Dconfig.resource=prod-application.conf"
+          - name: JAEGER_HOST
+            value: "jaeger-agent.default.svc.cluster.local"
+          - name: JAEGER_PORT
+            value: "5775"
+        ports:
+         - name: http
+           containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: "/status"
+            port: http
+          periodSeconds: 10
+          failureThreshold: 10
+          initialDelaySeconds: 20
+        livenessProbe:
+          httpGet:
+            path: "/status"
+            port: http
+          periodSeconds: 10
+          failureThreshold: 10
+          initialDelaySeconds: 20
+        
+        resources:
+          limits: 
+            memory: 128Mi
+          requests:
+            cpu: 0.15
+            memory: 128Mi
