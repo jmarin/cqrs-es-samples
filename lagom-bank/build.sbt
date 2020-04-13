@@ -10,6 +10,7 @@ val AkkaVersion = "2.6.4"
 
 val macwire = "com.softwaremill.macwire" %% "macros" % "2.3.0" % "provided"
 val scalaTest = "org.scalatest" %% "scalatest" % "3.0.4" % Test
+val scalaCheck = "org.scalacheck" %% "scalacheck" % "1.14.1" % Test
 val akkaDiscovery = "com.typesafe.akka" %% "akka-discovery" % AkkaVersion
 val akkaKubernetes = "com.lightbend.akka.discovery" %% "akka-discovery-kubernetes-api" % "1.0.5"
 val akkaHttp = "com.typesafe.akka" %% "akka-http" % "10.1.11"
@@ -45,6 +46,7 @@ lazy val `lagom-bank-impl` = (project in file("lagom-bank-impl"))
       lagomScaladslApi,
       macwire,
       scalaTest,
+      scalaCheck,
       h2,
       postgres,
       // Use Coda Hale Metrics and Lagom instrumentation
@@ -52,7 +54,8 @@ lazy val `lagom-bank-impl` = (project in file("lagom-bank-impl"))
       Cinnamon.library.cinnamonLagom,
       Cinnamon.library.cinnamonOpenTracing,
       Cinnamon.library.cinnamonOpenTracingJaeger
-    )
+    ),
+    coverageExcludedPackages := "com.github.jmarin.cqrs.lagom.bank.AccountLoader"
   )
   .settings(lagomForkedTestSettings)
   .dependsOn(`lagom-bank-api`)
