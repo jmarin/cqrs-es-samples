@@ -47,7 +47,8 @@ lazy val `lagom-bank-impl` = (project in file("lagom-bank-impl"))
       scalaCheck,
       h2,
       postgres
-    )
+    ),
+    coverageExcludedPackages := "com.github.jmarin.cqrs.lagom.bank.AccountLoader"
   )
   .dependsOn(`lagom-bank-api`)
 
