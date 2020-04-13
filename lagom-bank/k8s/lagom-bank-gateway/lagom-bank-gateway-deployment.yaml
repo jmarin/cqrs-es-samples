@@ -26,24 +26,9 @@ spec:
         ports:
          - name: http
            containerPort: 8080
-        readinessProbe:
-          httpGet:
-            path: "/status"
-            port: http
-          periodSeconds: 10
-          failureThreshold: 10
-          initialDelaySeconds: 20
-        livenessProbe:
-          httpGet:
-            path: "/status"
-            port: http
-          periodSeconds: 10
-          failureThreshold: 10
-          initialDelaySeconds: 20
-        
         resources:
           limits: 
-            memory: 128Mi
+            memory: 512Mi
           requests:
             cpu: 0.15
-            memory: 128Mi
+            memory: 512Mi

@@ -76,13 +76,17 @@ object LagomBankGateway {
       server <- bindingFuture(uri)
     } yield {
       println(
-        s"Server online at ${uri}/\nPress RETURN to stop..."
+        s"Server proxying requests to ${uri}"
       )
       server
     }
-    StdIn.readLine() // let it run until user presses return
     futureServer
-      .flatMap(_.unbind())
-      .onComplete(_ => system.terminate())
+      .onComplete {
+        case Success(x) =>
+          println("Server Started")
+        case Failure(e) =>
+          println("Error starting gateway service")
+          sys.exit(1)
+      }
   }
 }

@@ -16,7 +16,8 @@ object LagomBankClient {
       uri: String,
       requestEntity: RequestEntity,
       httpMethod: HttpMethod
-  )(implicit system: ActorSystem): Future[HttpResponse] =
+  )(implicit system: ActorSystem): Future[HttpResponse] = {
+    println(s"Proxying request to $uri")
     Http()
       .singleRequest(
         HttpRequest(
@@ -25,5 +26,5 @@ object LagomBankClient {
           entity = requestEntity
         )
       )
-
+  }
 }

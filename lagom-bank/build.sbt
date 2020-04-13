@@ -21,7 +21,8 @@ val postgres = "org.postgresql" % "postgresql" % "42.2.8"
 lazy val `lagom-bank` = (project in file("."))
   .aggregate(
     `lagom-bank-api`,
-    `lagom-bank-impl`
+    `lagom-bank-impl`,
+    `lagom-bank-gateway`
   )
 
 lazy val `lagom-bank-api` = (project in file("lagom-bank-api"))
@@ -61,10 +62,13 @@ lazy val `lagom-bank-impl` = (project in file("lagom-bank-impl"))
   .dependsOn(`lagom-bank-api`)
 
 lazy val `lagom-bank-gateway` = (project in file("lagom-bank-gateway"))
+  .enablePlugins(Cinnamon, JavaAppPackaging)
   .settings(
     libraryDependencies ++= Seq(
       akkaDiscovery,
       akkaStream,
-      akkaHttp
+      akkaHttp,
+      Cinnamon.library.cinnamonOpenTracing,
+      Cinnamon.library.cinnamonOpenTracingJaeger
     )
   )

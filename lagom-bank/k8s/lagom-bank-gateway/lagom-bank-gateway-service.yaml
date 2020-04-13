@@ -1,0 +1,15 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: lagom-bank-gateway-service
+  labels: 
+    app: lagom-bank-gateway
+spec:
+  ports:
+    - name: gateway-http
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: lagom-bank-gateway
+  type: NodePort
