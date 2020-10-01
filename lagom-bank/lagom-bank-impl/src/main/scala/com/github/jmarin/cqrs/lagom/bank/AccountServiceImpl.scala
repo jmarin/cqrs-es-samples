@@ -13,6 +13,10 @@ import com.github.jmarin.cqrs.lagom.bank.readside.{
 import com.lightbend.lagom.scaladsl.api.broker.Topic
 import com.github.jmari.cqrs.lagom.bank.FeeTransfered
 import com.github.jmari.cqrs.lagom.bank.AccountTopicEvent
+import com.lightbend.lagom.scaladsl.broker.TopicProducer
+import com.lightbend.lagom.scaladsl.persistence.EventStreamElement
+import kafka.utils.immutable
+import com.github.jmari.cqrs.lagom.bank.UnknownEvent
 
 class AccountServiceImpl(
     persistentEntityRegistry: PersistentEntityRegistry,
@@ -21,7 +25,29 @@ class AccountServiceImpl(
     implicit ec: ExecutionContext
 ) extends AccountService {
 
-  override def accountTopic(): Topic[AccountTopicEvent] = ???
+  override def accountTopic(): Topic[AccountTopicEvent] =
+    TopicProducer.taggedStreamWithOffset(AccountEvent.Tag.allTags.toList) {
+      (tag, fromOffset) =>
+        persistentEntityRegistry
+          .eventStream(tag, fromOffset)
+          .mapConcat(filterEvents)
+    }
+
+  private def filterEvents(
+      eventElement: EventStreamElement[AccountEvent]
+  ) = eventElement match {
+    case ev @ EventStreamElement(id, MoneyTransferred(to, amount), offset) =>
+      scala.collection.immutable.Seq((convertEvent(ev), offset))
+    case _ => Nil
+  }
+
+  private def convertEvent(
+      accountStream: EventStreamElement[AccountEvent]
+  ): AccountTopicEvent =
+    accountStream.event match {
+      case MoneyTransferred(to, amount) => FeeTransfered(to, amount)
+      case _                            => UnknownEvent("")
+    }
 
   private def entityRef(id: String) =
     persistentEntityRegistry.refFor[AccountEntity](id)

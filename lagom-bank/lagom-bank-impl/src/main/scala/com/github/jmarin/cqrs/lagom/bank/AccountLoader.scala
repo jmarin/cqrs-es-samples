@@ -22,6 +22,7 @@ import com.github.jmarin.cqrs.lagom.bank.readside.{
   AccountRepository,
   AccountProcessor
 }
+import com.lightbend.lagom.scaladsl.broker.kafka.LagomKafkaComponents
 
 class AccountLoader extends LagomApplicationLoader {
 
@@ -44,7 +45,8 @@ abstract class AccountApplication(context: LagomApplicationContext)
     // Mixing in WriteSideCassandraPersistenceComponents instead of CassandraPersistenceComponents
     // we can control what read-side to mix in
     with WriteSideCassandraPersistenceComponents
-    with AhcWSComponents {
+    with AhcWSComponents
+    with LagomKafkaComponents {
 
   override lazy val lagomServer: LagomServer =
     serverFor[AccountService](wire[AccountServiceImpl])

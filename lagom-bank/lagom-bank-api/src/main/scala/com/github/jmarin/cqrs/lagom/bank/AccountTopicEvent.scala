@@ -6,9 +6,15 @@ sealed trait AccountTopicEvent {
   def accountId: String
 }
 
+case class UnknownEvent(accountId: String) extends AccountTopicEvent
+
+object UnknownEvent {
+  implicit val format: Format[UnknownEvent] = Json.format[UnknownEvent]
+}
+
 case class FeeTransfered(
     accountId: String,
-    toAccountId: String,
+    //toAccountId: String,
     amount: BigDecimal
 ) extends AccountTopicEvent
 
@@ -21,7 +27,7 @@ object AccountTopicEvent {
   implicit val reads: Reads[AccountTopicEvent] = {
     (__ \ "event_type").read[String].flatMap {
       case "feeTransferred" => implicitly[Reads[FeeTransfered]].map(identity)
-      case other            => Reads(_ => JsError(s"Unknown event type $other"))
+      case "unknownEvent"   => implicitly[Reads[UnknownEvent]].map(identity)
     }
   }
 
@@ -29,6 +35,8 @@ object AccountTopicEvent {
     val (jsValue, eventType) = event match {
       case f: FeeTransfered =>
         (Json.toJson(f)(FeeTransfered.format), "feeTransferred")
+      case u: UnknownEvent =>
+        (Json.toJson(u)(UnknownEvent.format), "unknownEvent")
     }
     jsValue
       .transform(
