@@ -7,6 +7,9 @@ import com.lightbend.lagom.scaladsl.api.transport.Method
 import com.lightbend.lagom.scaladsl.api.ServiceCall
 import com.lightbend.lagom.scaladsl.api.broker.Topic
 import com.github.jmari.cqrs.lagom.bank.FeeTransfered
+import com.github.jmari.cqrs.lagom.bank.AccountTopicEvent
+import com.lightbend.lagom.scaladsl.api.broker.kafka.KafkaProperties
+import com.lightbend.lagom.scaladsl.api.broker.kafka.PartitionKeyStrategy
 
 trait AccountService extends Service {
 
@@ -17,7 +20,7 @@ trait AccountService extends Service {
   def transfer(id: String): ServiceCall[TransferToAccount, Account]
   def getAll(): ServiceCall[NotUsed, Seq[Account]]
 
-  def moneyTransferTopic(): Topic[FeeTransfered]
+  def accountTopic(): Topic[AccountTopicEvent]
 
   override def descriptor: Descriptor = {
     import Service._
@@ -31,12 +34,16 @@ trait AccountService extends Service {
         restCall(Method.GET, "/accounts/:id", get _)
       )
       .withTopics(
-        topic(AccountService.MONEY_TRANSFER_TOPIC_NAME, moneyTransferTopic)
+        topic(AccountService.ACCOUNT_TOPIC, accountTopic)
+          .addProperty(
+            KafkaProperties.partitionKeyStrategy,
+            PartitionKeyStrategy[AccountTopicEvent](_.accountId)
+          )
       )
       .withAutoAcl(true)
   }
 
   object AccountService {
-    val MONEY_TRANSFER_TOPIC_NAME = "accounts"
+    val ACCOUNT_TOPIC = "accounts"
   }
 }
