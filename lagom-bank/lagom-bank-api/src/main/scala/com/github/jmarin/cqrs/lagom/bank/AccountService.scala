@@ -5,6 +5,8 @@ import com.lightbend.lagom.scaladsl.api.Service
 import com.lightbend.lagom.scaladsl.api.Descriptor
 import com.lightbend.lagom.scaladsl.api.transport.Method
 import com.lightbend.lagom.scaladsl.api.ServiceCall
+import com.lightbend.lagom.scaladsl.api.broker.Topic
+import com.github.jmari.cqrs.lagom.bank.FeeTransfered
 
 trait AccountService extends Service {
 
@@ -14,6 +16,8 @@ trait AccountService extends Service {
   def get(id: String): ServiceCall[NotUsed, Account]
   def transfer(id: String): ServiceCall[TransferToAccount, Account]
   def getAll(): ServiceCall[NotUsed, Seq[Account]]
+
+  def moneyTransferTopic(): Topic[FeeTransfered]
 
   override def descriptor: Descriptor = {
     import Service._
@@ -26,6 +30,13 @@ trait AccountService extends Service {
         restCall(Method.PUT, "/accounts/:id/transfer", transfer _),
         restCall(Method.GET, "/accounts/:id", get _)
       )
+      .withTopics(
+        topic(AccountService.MONEY_TRANSFER_TOPIC_NAME, moneyTransferTopic)
+      )
       .withAutoAcl(true)
+  }
+
+  object AccountService {
+    val MONEY_TRANSFER_TOPIC_NAME = "accounts"
   }
 }

@@ -10,6 +10,8 @@ import com.github.jmarin.cqrs.lagom.bank.readside.{
   AccountRepository,
   ReadSideAccount
 }
+import com.lightbend.lagom.scaladsl.api.broker.Topic
+import com.github.jmari.cqrs.lagom.bank.FeeTransfered
 
 class AccountServiceImpl(
     persistentEntityRegistry: PersistentEntityRegistry,
@@ -17,6 +19,8 @@ class AccountServiceImpl(
 )(
     implicit ec: ExecutionContext
 ) extends AccountService {
+
+  override def moneyTransferTopic(): Topic[FeeTransfered] = ???
 
   private def entityRef(id: String) =
     persistentEntityRegistry.refFor[AccountEntity](id)
